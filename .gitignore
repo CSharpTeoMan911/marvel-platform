@@ -142,3 +142,4 @@ dist
 **/docs
 
 .firebaserc
+.env
