@@ -143,3 +143,4 @@ dist
 
 .firebaserc
 .env
+firebase.json
