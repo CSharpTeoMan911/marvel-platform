@@ -1,15 +1,10 @@
-import { httpsCallable } from 'firebase/functions';
-
 import {
   setError,
   setStreaming,
   setTyping,
 } from '@/libs/redux/slices/chatSlice';
-import { functions } from '@/libs/redux/store';
 import axios from "axios"
 import functions_urls from '@/libs/constants/google_functions_url_selector';
-import { config } from 'dotenv';
-import { auth } from '../../firebase/firebaseSetup';
 
 /**
  * Creates a chat session.
@@ -20,12 +15,14 @@ import { auth } from '../../firebase/firebaseSetup';
  */
 const createChatSession = async (payload, dispatch) => {
   try {
-    const response = await axios.get(functions_urls().createChatSession, {
-      params: payload
-    });
+    const response = await axios.post(functions_urls().createChatSession, payload);
 
-    console.log(response);
-    return response.data;
+    if(response.status == 200 && response.data.status !== 'error'){
+      return response.data;
+    }
+    else{
+      throw new Error(response.data.data);
+    }
   } catch (err) {
     dispatch(setError('Error! Couldn\u0027t send message'));
     dispatch(setStreaming(false));

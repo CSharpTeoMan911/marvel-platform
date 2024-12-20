@@ -1,5 +1,4 @@
 const admin = require('firebase-admin');
-const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const { default: axios } = require('axios');
 const { logger } = require('firebase-functions/v1');
 const { Timestamp } = require('firebase-admin/firestore');
@@ -74,7 +73,8 @@ const marvelCommunicator = async (payload) => {
     } = error;
     const { message } = data;
     DEBUG && logger.error('marvelCommunicator error:', data);
-    throw new HttpsError('internal', message);
+
+    return { status: 'error', data: message};
   }
 };
 
@@ -89,11 +89,11 @@ const marvelCommunicator = async (payload) => {
  *
  * @return {object} The response object containing the status and data.
  */
-const chat = onCall(async (props) => {
+const chat = async (props) => {
   try {
-    DEBUG && logger.log('Chat started, data:', props.data);
+    DEBUG && logger.log('Chat started, data:', props);
 
-    const { message, id } = props.data;
+    const { message, id } = props;
 
     DEBUG &&
       logger.log(
@@ -110,7 +110,8 @@ const chat = onCall(async (props) => {
 
     if (!chatSession.exists) {
       logger.log('Chat session not found: ', id);
-      throw new HttpsError('not-found', 'Chat session not found');
+
+      return { status: 'error', data: 'Chat session not found'};
     }
 
     const { user, type, messages } = chatSession.data();
@@ -169,9 +170,10 @@ const chat = onCall(async (props) => {
     return { status: 'success' };
   } catch (error) {
     DEBUG && logger.log('Chat error:', error);
-    throw new HttpsError('internal', error.message);
+
+    return { status: 'error', data: error.message};
   }
-});
+};
 
 /**
  * This creates a chat session for a user.

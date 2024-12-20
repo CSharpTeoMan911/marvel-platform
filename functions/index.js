@@ -40,12 +40,13 @@ app.get('/signUpUser', async (req, res) => {
     res.json(await userController.signUpUser(req.query));
 });
 
-app.get('/createChatSession', async(req, res)=>{
-    console.log(req.query)
-    res.json(await marvelAIController.createChatSession(req.query));
+app.post('/createChatSession', async(req, res)=>{
+    res.json(await marvelAIController.createChatSession(req.body));
 });
 
-
+app.post('/chat', async(req, res)=>{
+    res.json(await marvelAIController.chat(req.body));
+});
 
 // [END]
 
