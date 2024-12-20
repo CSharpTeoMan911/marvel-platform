@@ -19,7 +19,9 @@ const signUp = async (email, password, fullName) => {
         try {
 
           await sendVerification(auth_response.user);
-
+          
+          const env = process.env.MARVEL_API_KEY === "dev" ? EMULATOR_FUNCTIONS.signUpUser : PRODUCTION_FUNCTIONS. ;
+          
           const response = await axios.get(`${EMULATOR_FUNCTIONS.signUpUser}`, {
             params: {
               email: email,

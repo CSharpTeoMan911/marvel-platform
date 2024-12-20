@@ -7,5 +7,5 @@ export const EMULATOR_FUNCTIONS ={
 }
 
 export const PRODUCTION_FUNCTIONS ={
-
+    signUpUser:``
 }
