@@ -6,6 +6,10 @@ import {
   setTyping,
 } from '@/libs/redux/slices/chatSlice';
 import { functions } from '@/libs/redux/store';
+import axios from "axios"
+import functions_urls from '@/libs/constants/google_functions_url_selector';
+import { config } from 'dotenv';
+import { auth } from '../../firebase/firebaseSetup';
 
 /**
  * Creates a chat session.
@@ -16,9 +20,11 @@ import { functions } from '@/libs/redux/store';
  */
 const createChatSession = async (payload, dispatch) => {
   try {
-    const createSession = httpsCallable(functions, 'createChatSession');
-    const response = await createSession(payload);
+    const response = await axios.get(functions_urls().createChatSession, {
+      params: payload
+    });
 
+    console.log(response);
     return response.data;
   } catch (err) {
     dispatch(setError('Error! Couldn\u0027t send message'));

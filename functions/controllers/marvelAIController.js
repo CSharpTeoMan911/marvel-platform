@@ -56,6 +56,7 @@ const marvelCommunicator = async (payload) => {
     DEBUG && logger.log('MARVEL_ENDPOINT', MARVEL_ENDPOINT);
     DEBUG && logger.log('marvelPayload', marvelPayload);
 
+    console.log(`MARVEL_ENDPOINT: ${MARVEL_ENDPOINT}`)
     const resp = await axios.post(
       `${MARVEL_ENDPOINT}${AI_ENDPOINTS[type]}`,
       marvelPayload,
@@ -187,23 +188,19 @@ const chat = onCall(async (props) => {
  * @return {Promise<Object>} - A promise that resolves to an object containing the status and data of the chat sessions.
  * @throws {HttpsError} Throws an error if there is an internal error.
  */
-const createChatSession = onCall(async (props) => {
+const createChatSession = async (props) => {
   try {
-    DEBUG && logger.log('Communicator started, data:', props.data);
+    DEBUG && logger.log('Communicator started, data:', props);
 
-    const { user, message, type, systemMessage } = props.data;
-
-    // Ensure user id in request is same as user.id
-    if (props.auth.uid !== user.id) {
-      throw new HttpsError(
-        'permission-denied',
-        'User ID does not match the authenticated user'
-      );
-    }
+    const { user, message, type, systemMessage } = props;
 
     if (!user || !message || !type) {
       logger.log('Missing required fields', props.data);
-      throw new HttpsError('invalid-argument', 'Missing required fields');
+
+      return {
+        status: 'error',
+        data: 'Missing required fields',
+      };
     }
 
     /**
@@ -299,9 +296,12 @@ const createChatSession = onCall(async (props) => {
     };
   } catch (error) {
     logger.error(error);
-    throw new HttpsError('internal', error.message);
+    return {
+      status: 'error',
+      data: error.message,
+    };
   }
-});
+};
 
 module.exports = {
   chat,
