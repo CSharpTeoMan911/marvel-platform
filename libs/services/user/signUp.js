@@ -9,7 +9,7 @@ import { sendVerification } from './manageUser';
 
 import axios from "axios"
 
-import { EMULATOR_FUNCTIONS, PRODUCTION_FUNCTIONS } from "../../constants/functions"
+import functions_urls from "../../constants/google_functions_url_selector"
 
 const signUp = async (email, password, fullName) => {
   try {
@@ -20,9 +20,9 @@ const signUp = async (email, password, fullName) => {
 
           await sendVerification(auth_response.user);
           
-          const env = process.env.MARVEL_API_KEY === "dev" ? EMULATOR_FUNCTIONS.signUpUser : PRODUCTION_FUNCTIONS. ;
+          console.log(`Function URL: ${functions_urls.signUpUser}`);
           
-          const response = await axios.get(`${EMULATOR_FUNCTIONS.signUpUser}`, {
+          const response = await axios.get(`${functions_urls.signUpUser}`, {
             params: {
               email: email,
               fullName: fullName,

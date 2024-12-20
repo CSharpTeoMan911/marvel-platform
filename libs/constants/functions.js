@@ -7,5 +7,7 @@ export const EMULATOR_FUNCTIONS ={
 }
 
 export const PRODUCTION_FUNCTIONS ={
-    signUpUser:``
+    signUpUser:`${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_FUNCTIONS_URL}/signUpUser/`,
+    chat:`${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_FUNCTIONS_URL}/chat/`,
+    createChatSession:`${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_FUNCTIONS_URL}/createChatSession/`
 }
