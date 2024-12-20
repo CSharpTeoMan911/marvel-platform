@@ -144,3 +144,5 @@ dist
 .firebaserc
 .env
 firebase.json
+
+**firebase-adminsdk**

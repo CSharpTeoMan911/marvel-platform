@@ -6,6 +6,7 @@ import { auth, functions } from '@/libs/redux/store';
 
 import { sendVerification } from './manageUser';
 
+import { EMULATOR_FUNCTIONS, PRODUCTION_FUNCTIONS } from '@/libs/constants/functions';
 
 import axios from "axios"
 
@@ -20,9 +21,7 @@ const signUp = async (email, password, fullName) => {
 
           await sendVerification(auth_response.user);
           
-          console.log(`Function URL: ${functions_urls.signUpUser}`);
-          
-          const response = await axios.get(`${functions_urls.signUpUser}`, {
+          const response = await axios.get(`${functions_urls().signUpUser}`, {
             params: {
               email: email,
               fullName: fullName,

@@ -10,7 +10,20 @@ const app = express();
 // Automatically allow cross-origin requests
 app.use(cors({ origin: true }));
 
-admin.initializeApp();
+
+// Verify if Firebase front-end/back-end is deployed in production or development mode
+if(process.env.NEXT_PUBLIC_FIREBASE_DEPLOYMENT_MODE === "dev")
+{
+    admin.initializeApp();
+}
+else
+{
+    // If the app is deployed in production mode authenticate with the `Firebase Admin SDK` private key.
+    // Generate the key by pressing the `Generate new private key` button at `Project settings\Account settings\Service accounts`
+    // within your Firebase project and add the generated file in the `controllers` directory.
+    const serviceAccount = require("./controllers/marvel-platform-c3a0b-firebase-adminsdk-kplbb-dc41163a3e.json");
+    admin.initializeApp({credential:admin.credential.cert(serviceAccount)});
+}
 
 const userController = require('./controllers/userController');
 const marvelAIController = require('./controllers/marvelAIController');
