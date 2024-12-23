@@ -141,8 +141,8 @@ dist
 **/build/
 **/docs
 
-.firebaserc
-.env
-firebase.json
+# .firebaserc
+# .env
+# firebase.json
 
 **firebase-adminsdk**
