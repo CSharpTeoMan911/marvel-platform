@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' }); // Ensure this is at the top
+require('dotenv').config({ path: './.env' }); // Ensure this is at the top
 const { https } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
 
@@ -6,23 +6,25 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+app.use(cors(corsOptionsDelegate));
 
-// Automatically allow cross-origin requests
-app.use(cors({ origin: true }));
-
+var corsOptionsDelegate = function (req, callback) {
+    console.log(req);
+    callback(null, { origin: true }) // callback expects two parameters: error and options
+}
 
 // Verify if Firebase front-end/back-end is deployed in production or development mode
-if(process.env.NEXT_PUBLIC_FIREBASE_DEPLOYMENT_MODE === "dev")
-{
+if (process.env.NEXT_PUBLIC_FIREBASE_DEPLOYMENT_MODE === "dev") {
+    console.log(`[ Initialising Google Functions in Development mode ]`);
     admin.initializeApp();
 }
-else
-{
+else {
     // If the app is deployed in production mode authenticate with the `Firebase Admin SDK` private key.
     // Generate the key by pressing the `Generate new private key` button at `Project settings\Account settings\Service accounts`
     // within your Firebase project and add the generated file in the `controllers` directory.
+    console.log(`[ Initialising Google Functions in Production mode ]`);
     const serviceAccount = require("./controllers/marvel-platform-c3a0b-firebase-adminsdk-kplbb-dc41163a3e.json");
-    admin.initializeApp({credential:admin.credential.cert(serviceAccount)});
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
 
 const userController = require('./controllers/userController');
@@ -36,15 +38,16 @@ seedDatabase();
 //
 // [BEGIN]
 
+
 app.get('/signUpUser', async (req, res) => {
     res.json(await userController.signUpUser(req.query));
 });
 
-app.post('/createChatSession', async(req, res)=>{
+app.post('/createChatSession', async (req, res) => {
     res.json(await marvelAIController.createChatSession(req.body));
 });
 
-app.post('/chat', async(req, res)=>{
+app.post('/chat', async (req, res) => {
     res.json(await marvelAIController.chat(req.body));
 });
 
