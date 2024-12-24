@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 import { AUTH_ERROR_MESSAGES } from '@/libs/constants/auth';
 
-import { auth, functions } from '@/libs/redux/store';
+import { auth, functions, store } from '@/libs/redux/store';
 
 import { sendVerification } from './manageUser';
 
@@ -12,7 +12,6 @@ import functions_urls from "../../constants/google_functions_url_selector"
 
 const signUp = async (email, password, fullName) => {
   try {
-
     await createUserWithEmailAndPassword(auth, email, password)
       .then(async (auth_response) => {
         try {
@@ -29,6 +28,7 @@ const signUp = async (email, password, fullName) => {
             }
           });
 
+
           if (response.status == 200 && response.data.status == 'success') {
             return auth_response.user;
           }
@@ -44,6 +44,7 @@ const signUp = async (email, password, fullName) => {
       });
 
   } catch (error) {
+    console.log(error);
     throw new Error(AUTH_ERROR_MESSAGES[error?.code]);
   }
 };

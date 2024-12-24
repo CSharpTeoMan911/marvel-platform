@@ -11,11 +11,13 @@ import {
 // Thunk for fetching user data
 export const fetchUserData = createAsyncThunk(
   'userData/fetch',
-  async ({ firestore, id }) => {
+  async ({ firestore, id }, { getState, rejectWithValue }) => {
     try {
+      const { auth } = getState();
+
+      console.log(auth);
       const userQuery = query(
-        collection(firestore, 'users'),
-        where('id', '==', id)
+        collection(firestore, 'users')
       );
 
       const userDocSnapshot = await getDocs(userQuery);
@@ -23,6 +25,8 @@ export const fetchUserData = createAsyncThunk(
       if (userDocSnapshot.empty) return null;
 
       const user = userDocSnapshot.docs[0].data();
+      user.id = auth?.data?.uid;
+      user.email = auth?.data?.email;
 
       return user;
     } catch (error) {
@@ -38,6 +42,7 @@ export const updateUserData = createAsyncThunk(
     try {
       const { auth } = getState();
       const userId = auth?.data?.uid;
+      const userEmail = auth?.data?.email;
 
       if (!userId) {
         throw new Error('User ID is undefined');
@@ -46,6 +51,9 @@ export const updateUserData = createAsyncThunk(
       if (!data || typeof data !== 'object') {
         throw new Error('Data is undefined or not an object');
       }
+
+      data.email = userEmail;
+      data.id =userId;
 
       const userDocRef = doc(firestore, 'users', userId);
 

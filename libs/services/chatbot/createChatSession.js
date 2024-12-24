@@ -5,6 +5,8 @@ import {
 } from '@/libs/redux/slices/chatSlice';
 import axios from "axios"
 import functions_urls from '@/libs/constants/google_functions_url_selector';
+import { functions } from '@/libs/redux/store';
+
 
 /**
  * Creates a chat session.
@@ -16,7 +18,6 @@ import functions_urls from '@/libs/constants/google_functions_url_selector';
 const createChatSession = async (payload, dispatch) => {
   try {
     const response = await axios.post(functions_urls().createChatSession, payload);
-
     if(response.status == 200 && response.data.status !== 'error'){
       return response.data;
     }
